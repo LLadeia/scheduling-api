@@ -32,6 +32,15 @@ services:
       interval: 10s
       timeout: 6s
       retries: 5
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_AVAILABILITY_MAX_DAYS: ${AVAILABILITY_MAX_DAYS:-31}
+    ports: ["127.0.0.1:3000:80"]
+    networks: [backend]
+    depends_on:
+      api: {condition: service_healthy}
 networks:
   backend: {}
 volumes:

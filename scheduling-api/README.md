@@ -186,3 +186,165 @@ O núcleo usa apenas uma organização. Extensões: refresh tokens, e-mail, fron
 recorrência, múltiplas organizações, IA/WhatsApp, WebSocket e Kubernetes.
 A cobertura é uma meta quantitativa; os testes de integridade e autorização são
 obrigatórios mesmo quando o percentual já foi alcançado.
+
+## Frontend AgendaSalas
+
+Interface em português com React, TypeScript, Vite e React Router, em `frontend/`.
+Inclui autenticação, salas/disponibilidade, criação de reservas, listagem paginada,
+filtros, detalhes, reagendamento e cancelamento com confirmação. Administradores
+podem cadastrar/editar/ativar salas, consultar todas as reservas e filtrar por ID
+de usuário. Não há busca de usuários nem exclusão de salas no contrato da API.
+
+### Executar tudo com Docker Compose
+
+Na pasta deste README (a raiz Git contém outra pasta `scheduling-api/`):
+
+```bash
+python3 scripts/init_env.py # apenas se .env ainda não existir; nunca o sobrescreva
+# Acrescente configurações necessárias ao .env local, sem versionar segredos.
+docker compose up -d --build
+docker compose ps
+docker compose exec api python -m scripts.create_admin --email admin@example.com
+```
+
+A senha do primeiro administrador é solicitada sem eco pelo comando existente
+(mínimo 12, máximo 128 caracteres). Cadastro pela interface sempre cria cliente.
+
+- Interface: http://localhost:3000
+- Swagger: http://localhost:8000/docs
+- Saúde pelo proxy: http://localhost:3000/api/health
+
+A API, o banco, a migração, os healthchecks, a rede e o volume existentes foram
+preservados. O frontend é servido por Nginx após build estático; não usa Vite em
+produção. `/api/` é encaminhado à API sem esse prefixo. Rotas do React usam fallback
+para `index.html`; erros da API mantêm status/corpo da API. Não foi necessário CORS.
+A porta 3000 é publicada somente no loopback; se ocupada, ajuste apenas a porta do
+frontend no Compose. `docker compose down` preserva o volume do banco.
+
+### Desenvolvimento com Vite
+
+Requisitos: Node **22.12+** (recomendado Node 24, registrado em `frontend/.nvmrc`),
+Python 3.12 e PostgreSQL 17. Siga a seção de desenvolvimento sem Docker para
+configurar o backend; no terminal dele, com sua conexão e segredo locais:
+
+```bash
+# Na pasta deste README, com .venv ativado e .env configurado para o PostgreSQL local:
+alembic upgrade head
+uvicorn app.main:app --reload --no-access-log --no-proxy-headers
+# Em outro terminal:
+cd frontend
+npm ci
+npm run dev
+```
+
+Também é possível manter o backend pelo Compose:
+`docker compose up -d --build api` e executar somente o frontend com Vite.
+Abra http://localhost:3000; Swagger permanece em http://localhost:8000/docs.
+
+No ambiente de nuvem preparado nesta sessão, o backend local usa o helper externo
+`bash /workspace/.scheduling-cloud/start.sh` e o PostgreSQL Docker da preparação.
+O código do frontend não depende desse helper; as instruções acima servem em uma
+máquina comum. Não execute simultaneamente Vite e o frontend Compose na porta 3000.
+
+Variáveis opcionais em `frontend/.env.local` (veja `.env.example`):
+
+| Variável | Padrão | Uso |
+| --- | --- | --- |
+| `VITE_API_BASE_URL` | `/api` | URL pública da API no navegador |
+| `API_PROXY_TARGET` | `http://127.0.0.1:8000` | Destino do proxy Vite; só no servidor de desenvolvimento |
+| `VITE_AVAILABILITY_MAX_DAYS` | `31` | Limite visual da consulta de disponibilidade |
+
+Nunca coloque JWT_SECRET, senha do banco ou outros segredos em `VITE_*`.
+O limite visual deve acompanhar `AVAILABILITY_MAX_DAYS` do backend: se mudar essa
+configuração, ajuste `VITE_AVAILABILITY_MAX_DAYS` no desenvolvimento. No Compose,
+o argumento de build já acompanha `${AVAILABILITY_MAX_DAYS:-31}`; reconstrua o
+frontend após alterar. A validação definitiva permanece no servidor.
+
+### Sessão e datas
+
+O token fica **somente na memória**: atualizar a página ou abrir outra aba exige
+novo login. Sair limpa token, perfil e telas privadas; isso **não revoga** o JWT já
+emitido no servidor. Após login o papel é consultado em `/users/me`. Respostas 401
+autenticadas encerram a sessão. A autorização definitiva é do backend.
+
+Datas são selecionadas e apresentadas no fuso local do navegador, indicado no
+rodapé e nos formulários. Envios usam ISO UTC (`Date.toISOString()`). Reagendamentos
+convertem os componentes UTC para os locais antes de preencher o formulário.
+Os filtros significam início em `[starts_from, starts_before)`, com limite inicial
+inclusive e final exclusivo; não representam interseção de intervalos.
+Reservas canceladas ou já iniciadas não podem ser alteradas. Uma sala inativa
+impede criação e reagendamento; não impede cancelar uma reserva futura.
+
+### Roteiro para a banca
+
+1. Crie o primeiro administrador pelo comando protegido e entre na interface.
+2. Em **Gerenciar salas**, cadastre uma sala e edite sua descrição.
+3. Saia, cadastre um cliente e entre com essa conta.
+4. Em **Salas**, consulte disponibilidade; a consulta não garante uma reserva.
+5. Reserve um intervalo futuro; veja confirmação e detalhes.
+6. Tente reservar um intervalo sobreposto: o servidor retorna 409 e o formulário
+   preserva os dados para correção.
+7. Em **Meus agendamentos**, aplique filtros e abra detalhes; reagende e cancele
+   após confirmar. O cancelamento é definitivo.
+8. Entre como administrador para ver todas as reservas e filtrar por ID de usuário.
+9. Desative uma sala para demonstrar que ela não aceita novas reservas.
+
+### Verificações do frontend e limitações
+
+```bash
+cd frontend
+npm run typecheck
+npm run build
+npm test
+TZ=America/Sao_Paulo npm test
+# De volta à pasta do Compose:
+cd ..
+docker compose config --quiet
+docker compose build
+```
+
+Os testes usam Vitest e React Testing Library, com mocks isolados para login,
+proteção administrativa, payload de criação/reagendamento, conflito 409 preservando
+dados, cancelamento apenas após confirmação, datas, Retry-After, 422, resposta sem
+corpo e falha de conexão. Não há lint de frontend configurado; TypeScript verifica
+tipos, e Ruff continua restrito ao backend.
+
+Validação desta implementação: TypeScript e build Vite passaram; 11 testes passaram
+incluindo execução no fuso America/Sao_Paulo. Um Chromium real, com PostgreSQL 17 e
+API em execução (sem mock), validou login de admin, criação de sala, cadastro/login
+de cliente, reserva, sobreposição 409, reagendamento, cancelamento, responsividade
+390px e encerramento da sessão ao recarregar. Sem erros JavaScript nesse fluxo.
+Os registros de demonstração foram criados apenas no banco local de desenvolvimento;
+nenhuma credencial foi adicionada ao repositório. Os 34 testes do backend já haviam
+passado na preparação (85% de cobertura); o código Python não foi alterado aqui.
+
+O Compose foi validado, mas o build completo das imagens neste ambiente de nuvem
+falhou por resolução DNS dentro do Docker ao baixar dependências. Isso não valida
+uma execução completa via Compose. Reexecute `docker compose up -d --build` em uma
+máquina com acesso aos registries. Não foram desativadas verificações TLS, alteradas
+versões Python ou modificadas regras de negócio para contornar esse impedimento.
+Sem refresh token, persistência de sessão, recorrência ou relatórios nesta etapa.
+
+O smoke real de navegador pode ser repetido com a API e a interface já em execução:
+
+```bash
+cd frontend
+npx playwright install chromium
+# Configure E2E_ADMIN_EMAIL e E2E_ADMIN_PASSWORD no ambiente do terminal, sem
+# colocar a senha em arquivos versionados ou em comandos salvos no histórico.
+npm run test:browser
+# Opcional: CHROMIUM_EXECUTABLE_PATH aponta para um Chromium já instalado.
+# Opcional: E2E_BASE_URL muda a origem da interface (padrão http://127.0.0.1:3000).
+```
+
+Esse teste cria uma sala, um cliente e uma reserva no banco de desenvolvimento;
+use uma instância local própria para demonstração. Screenshots ficam em
+`frontend/test-results/`, ignorado pelo Git. O script termina com erro se um passo
+falhar. Os testes isolados não precisam de navegador instalado nem credenciais.
+
+Também foi validado Nginx 1.28 com o build estático local montado: configuração,
+fallback de rota React, prontidão via proxy e preservação de erros JSON 401/404.
+Essa verificação não substitui o build completo das imagens. Uma consulta DNS em
+container Node confirmou `EAI_AGAIN` para registry.npmjs.org neste runtime; o build
+isolado do frontend ficou bloqueado em `npm ci`. A auditoria final de dependências
+(`npm audit --audit-level=high`) não encontrou vulnerabilidades.
