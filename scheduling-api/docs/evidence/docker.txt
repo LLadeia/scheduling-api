@@ -1,0 +1,11 @@
+$ docker version
+exit=127
+/bin/sh: 1: docker: not found
+
+$ docker compose config
+exit=127
+/bin/sh: 1: docker: not found
+
+$ docker build --target production -t scheduling-api:local .
+exit=127
+/bin/sh: 1: docker: not found

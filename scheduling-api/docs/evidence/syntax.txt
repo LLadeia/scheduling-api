@@ -1,0 +1,2 @@
+python -m compileall -q app scripts tests alembic
+exit=0

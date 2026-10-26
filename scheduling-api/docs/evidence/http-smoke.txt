@@ -1,0 +1,17 @@
+Admin CLI via PTY: exit 0; protected input; no password echoed.
+GET /health: 200
+POST /auth/login: 200
+POST /resources: 201
+POST /auth/register: 201
+POST /auth/register: 201
+POST /auth/login: 200
+POST /auth/login: 200
+POST /appointments: 201
+POST /appointments: 409
+GET /appointments/1: 404
+PATCH /appointments/1: 200
+PATCH /appointments/1: 200
+PATCH /appointments/1: 200
+GET /health/live: 200
+GET /openapi.json: 200
+OpenAPI exported; no tokens or passwords recorded.

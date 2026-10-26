@@ -1,0 +1,7 @@
+$ python -m alembic upgrade head
+exit=0
+Empty scheduling_smoke database migrated.
+ PostgreSQL 17.9 on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0, 64-bit
+
+ 0001
+

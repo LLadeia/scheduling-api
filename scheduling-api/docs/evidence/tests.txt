@@ -1,0 +1,37 @@
+..................................                                       [100%]
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.12.14-final-0 _______________
+
+Name                              Stmts   Miss Branch BrPart  Cover   Missing
+-----------------------------------------------------------------------------
+app/__init__.py                       0      0      0      0   100%
+app/api/__init__.py                   0      0      0      0   100%
+app/api/dependencies.py              28      3      6      0    85%   27-29
+app/api/routers/__init__.py           0      0      0      0   100%
+app/api/routers/appointments.py      29      3      4      0    91%   24-25, 57
+app/api/routers/auth.py              19      2      0      0    89%   14-15
+app/api/routers/resources.py         32      5      4      0    81%   26-27, 33-35
+app/core/__init__.py                  0      0      0      0   100%
+app/core/config.py                   28      0      4      0   100%
+app/core/exceptions.py                6      0      0      0   100%
+app/core/logging.py                  22      0      4      0   100%
+app/core/rate_limit.py               26      2     10      2    89%   26, 32
+app/core/security.py                 21      0      2      0   100%
+app/db/__init__.py                    0      0      0      0   100%
+app/db/base.py                        3      0      0      0   100%
+app/db/session.py                    10      5      2      0    42%   14-20
+app/main.py                          40      6      4      0    82%   19-21, 67-68, 71
+app/models/__init__.py                2      0      0      0   100%
+app/models/entities.py               31      0      0      0   100%
+app/repositories/__init__.py          0      0      0      0   100%
+app/repositories/store.py            38      1     16      0    98%   63
+app/schemas/__init__.py               0      0      0      0   100%
+app/schemas/contracts.py             96      0      8      0   100%
+app/services/__init__.py              0      0      0      0   100%
+app/services/auth.py                 19      1      2      0    95%   16
+app/services/scheduling.py           90     33     34      7    53%   21, 23, 35-39, 47, 52-55, 58, 68, 73-75, 81, 83, 85->88, 89-91, 94, 102-105, 109-116
+-----------------------------------------------------------------------------
+TOTAL                               540     61    100      9    85%
+Coverage XML written to file docs/evidence/coverage.xml
+Required test coverage of 80% reached. Total coverage: 85.00%
+34 passed in 5.87s

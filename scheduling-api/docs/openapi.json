@@ -1,0 +1,1922 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "API de Agendamento de Salas",
+    "description": "TFG: reservas com JWT, RBAC e integridade de intervalos no PostgreSQL.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Autenticação"
+        ],
+        "summary": "Cadastrar cliente",
+        "operationId": "register_auth_register_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Register"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciais ou token inválidos",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Credenciais ou token inválidos"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ação proibida",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Ação proibida"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Registro não encontrado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Registro não encontrado"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de horário ou estado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Conflito de horário ou estado"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Entrada inválida",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Entrada inválida"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Limite de tentativas excedido",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Limite de tentativas excedido"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Autenticação"
+        ],
+        "summary": "Login com JSON e access token",
+        "operationId": "login_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Credentials"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciais ou token inválidos",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Credenciais ou token inválidos"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ação proibida",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Ação proibida"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Registro não encontrado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Registro não encontrado"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de horário ou estado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Conflito de horário ou estado"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Entrada inválida",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Entrada inválida"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Limite de tentativas excedido",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Limite de tentativas excedido"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/me": {
+      "get": {
+        "tags": [
+          "Autenticação"
+        ],
+        "summary": "Me",
+        "operationId": "me_users_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciais ou token inválidos",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Credenciais ou token inválidos"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ação proibida",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Ação proibida"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Registro não encontrado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Registro não encontrado"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de horário ou estado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Conflito de horário ou estado"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Entrada inválida",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Entrada inválida"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Limite de tentativas excedido",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Limite de tentativas excedido"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/resources": {
+      "get": {
+        "tags": [
+          "Salas"
+        ],
+        "summary": "List Resources",
+        "operationId": "list_resources_resources_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ResourceOut"
+                  },
+                  "type": "array",
+                  "title": "Response List Resources Resources Get"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciais ou token inválidos",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Credenciais ou token inválidos"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ação proibida",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Ação proibida"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Registro não encontrado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Registro não encontrado"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de horário ou estado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Conflito de horário ou estado"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Entrada inválida",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Entrada inválida"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Limite de tentativas excedido",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Limite de tentativas excedido"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Salas"
+        ],
+        "summary": "Create Resource",
+        "operationId": "create_resource_resources_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResourceCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciais ou token inválidos",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Credenciais ou token inválidos"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ação proibida",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Ação proibida"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Registro não encontrado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Registro não encontrado"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de horário ou estado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Conflito de horário ou estado"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Entrada inválida",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Entrada inválida"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Limite de tentativas excedido",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Limite de tentativas excedido"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/resources/{resource_id}": {
+      "get": {
+        "tags": [
+          "Salas"
+        ],
+        "summary": "Read Resource",
+        "operationId": "read_resource_resources__resource_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "resource_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Resource Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciais ou token inválidos",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Credenciais ou token inválidos"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ação proibida",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Ação proibida"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Registro não encontrado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Registro não encontrado"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de horário ou estado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Conflito de horário ou estado"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Entrada inválida",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Entrada inválida"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Limite de tentativas excedido",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Limite de tentativas excedido"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Salas"
+        ],
+        "summary": "Patch Resource",
+        "operationId": "patch_resource_resources__resource_id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "resource_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Resource Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResourcePatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciais ou token inválidos",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Credenciais ou token inválidos"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ação proibida",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Ação proibida"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Registro não encontrado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Registro não encontrado"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de horário ou estado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Conflito de horário ou estado"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Entrada inválida",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Entrada inválida"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Limite de tentativas excedido",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Limite de tentativas excedido"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/resources/{resource_id}/availability": {
+      "get": {
+        "tags": [
+          "Salas"
+        ],
+        "summary": "Availability",
+        "description": "Janela máxima padrão de 31 dias. Intervalos livres não garantem reserva.",
+        "operationId": "availability_resources__resource_id__availability_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "resource_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Resource Id"
+            }
+          },
+          {
+            "name": "starts_at",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "title": "Starts At"
+            }
+          },
+          {
+            "name": "ends_at",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "title": "Ends At"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AvailabilityOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciais ou token inválidos",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Credenciais ou token inválidos"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ação proibida",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Ação proibida"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Registro não encontrado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Registro não encontrado"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de horário ou estado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Conflito de horário ou estado"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Entrada inválida",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Entrada inválida"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Limite de tentativas excedido",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Limite de tentativas excedido"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/appointments": {
+      "post": {
+        "tags": [
+          "Reservas"
+        ],
+        "summary": "Create",
+        "operationId": "create_appointments_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppointmentCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppointmentOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciais ou token inválidos",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Credenciais ou token inválidos"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ação proibida",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Ação proibida"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Registro não encontrado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Registro não encontrado"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de horário ou estado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Conflito de horário ou estado"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Entrada inválida",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Entrada inválida"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Limite de tentativas excedido",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Limite de tentativas excedido"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Reservas"
+        ],
+        "summary": "List Appointments",
+        "description": "Filtros de início em [starts_from, starts_before). Total e itens respeitam propriedade.",
+        "operationId": "list_appointments_appointments_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "starts_from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Starts From"
+            }
+          },
+          {
+            "name": "starts_before",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Starts Before"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "scheduled",
+                    "cancelled"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppointmentPage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciais ou token inválidos",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Credenciais ou token inválidos"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ação proibida",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Ação proibida"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Registro não encontrado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Registro não encontrado"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de horário ou estado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Conflito de horário ou estado"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Entrada inválida",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Entrada inválida"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Limite de tentativas excedido",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Limite de tentativas excedido"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/appointments/{appointment_id}": {
+      "get": {
+        "tags": [
+          "Reservas"
+        ],
+        "summary": "Read",
+        "operationId": "read_appointments__appointment_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "appointment_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Appointment Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppointmentOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciais ou token inválidos",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Credenciais ou token inválidos"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ação proibida",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Ação proibida"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Registro não encontrado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Registro não encontrado"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de horário ou estado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Conflito de horário ou estado"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Entrada inválida",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Entrada inválida"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Limite de tentativas excedido",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Limite de tentativas excedido"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Reservas"
+        ],
+        "summary": "Patch",
+        "description": "action=cancel para cancelamento definitivo; action=reschedule exige início e fim.",
+        "operationId": "patch_appointments__appointment_id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "appointment_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Appointment Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/Reschedule"
+                  },
+                  {
+                    "$ref": "#/components/schemas/Cancel"
+                  }
+                ],
+                "discriminator": {
+                  "propertyName": "action",
+                  "mapping": {
+                    "reschedule": "#/components/schemas/Reschedule",
+                    "cancel": "#/components/schemas/Cancel"
+                  }
+                },
+                "title": "Data"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppointmentOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciais ou token inválidos",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Credenciais ou token inválidos"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ação proibida",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Ação proibida"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Registro não encontrado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Registro não encontrado"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de horário ou estado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Conflito de horário ou estado"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Entrada inválida",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Entrada inválida"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Limite de tentativas excedido",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Limite de tentativas excedido"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health/live": {
+      "get": {
+        "tags": [
+          "Saúde"
+        ],
+        "summary": "Live",
+        "operationId": "live_health_live_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciais ou token inválidos",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Credenciais ou token inválidos"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ação proibida",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Ação proibida"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Registro não encontrado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Registro não encontrado"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de horário ou estado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Conflito de horário ou estado"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Entrada inválida",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Entrada inválida"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Limite de tentativas excedido",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Limite de tentativas excedido"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": [
+          "Saúde"
+        ],
+        "summary": "Ready",
+        "operationId": "ready_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciais ou token inválidos",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Credenciais ou token inválidos"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ação proibida",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Ação proibida"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Registro não encontrado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Registro não encontrado"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de horário ou estado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Conflito de horário ou estado"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Entrada inválida",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Entrada inválida"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Limite de tentativas excedido",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Limite de tentativas excedido"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Banco indisponível ou migração ausente"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AppointmentCreate": {
+        "properties": {
+          "starts_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Starts At",
+            "examples": [
+              "2030-01-10T13:00:00Z"
+            ]
+          },
+          "ends_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Ends At",
+            "examples": [
+              "2030-01-10T14:00:00Z"
+            ]
+          },
+          "resource_id": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Resource Id",
+            "examples": [
+              1
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "starts_at",
+          "ends_at",
+          "resource_id"
+        ],
+        "title": "AppointmentCreate"
+      },
+      "AppointmentOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "resource_id": {
+            "type": "integer",
+            "title": "Resource Id"
+          },
+          "starts_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Starts At"
+          },
+          "ends_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Ends At"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "scheduled",
+              "cancelled"
+            ],
+            "title": "Status"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "user_id",
+          "resource_id",
+          "starts_at",
+          "ends_at",
+          "status",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "AppointmentOut"
+      },
+      "AppointmentPage": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AppointmentOut"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "page": {
+            "type": "integer",
+            "title": "Page"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "page",
+          "limit"
+        ],
+        "title": "AppointmentPage"
+      },
+      "AvailabilityOut": {
+        "properties": {
+          "resource_id": {
+            "type": "integer",
+            "title": "Resource Id"
+          },
+          "starts_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Starts At"
+          },
+          "ends_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Ends At"
+          },
+          "free_intervals": {
+            "items": {
+              "$ref": "#/components/schemas/Interval"
+            },
+            "type": "array",
+            "title": "Free Intervals"
+          },
+          "reservation_guaranteed": {
+            "type": "boolean",
+            "title": "Reservation Guaranteed",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "resource_id",
+          "starts_at",
+          "ends_at",
+          "free_intervals"
+        ],
+        "title": "AvailabilityOut"
+      },
+      "Cancel": {
+        "properties": {
+          "action": {
+            "type": "string",
+            "const": "cancel",
+            "title": "Action"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "action"
+        ],
+        "title": "Cancel"
+      },
+      "Credentials": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email",
+            "examples": [
+              "cliente@example.com"
+            ]
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Password"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "Credentials"
+      },
+      "Interval": {
+        "properties": {
+          "starts_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Starts At",
+            "examples": [
+              "2030-01-10T13:00:00Z"
+            ]
+          },
+          "ends_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Ends At",
+            "examples": [
+              "2030-01-10T14:00:00Z"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "starts_at",
+          "ends_at"
+        ],
+        "title": "Interval"
+      },
+      "Register": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email",
+            "examples": [
+              "cliente@example.com"
+            ]
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 12,
+            "title": "Password"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "Register"
+      },
+      "Reschedule": {
+        "properties": {
+          "starts_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Starts At",
+            "examples": [
+              "2030-01-10T13:00:00Z"
+            ]
+          },
+          "ends_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Ends At",
+            "examples": [
+              "2030-01-10T14:00:00Z"
+            ]
+          },
+          "action": {
+            "type": "string",
+            "const": "reschedule",
+            "title": "Action"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "starts_at",
+          "ends_at",
+          "action"
+        ],
+        "title": "Reschedule"
+      },
+      "ResourceCreate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Name",
+            "examples": [
+              "Sala de reuniões"
+            ]
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 4000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "ResourceCreate"
+      },
+      "ResourceOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "is_active",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "ResourceOut"
+      },
+      "ResourcePatch": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 4000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "is_active": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Active"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "ResourcePatch"
+      },
+      "TokenOut": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token"
+          },
+          "token_type": {
+            "type": "string",
+            "title": "Token Type",
+            "default": "bearer"
+          },
+          "expires_in": {
+            "type": "integer",
+            "title": "Expires In"
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token",
+          "expires_in"
+        ],
+        "title": "TokenOut"
+      },
+      "UserOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "admin",
+              "client"
+            ],
+            "title": "Role"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "email",
+          "role",
+          "is_active",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "UserOut"
+      }
+    },
+    "securitySchemes": {
+      "HTTPBearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

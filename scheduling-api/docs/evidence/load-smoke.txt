@@ -1,0 +1,46 @@
+Seed concluído: 100 usuários, 10 salas, 10000 reservas. Tokens no arquivo privado.
+ users | resources | appointments 
+-------+-----------+--------------
+   100 |        10 |        10000
+(1 row)
+
+Real HTTP /health: 200, ready. OpenAPI exported.
+[2026-10-13 23:43:19,607] 810e5ade76b1/INFO/locust.main: Starting Locust 2.46.7
+[2026-10-13 23:43:19,607] 810e5ade76b1/INFO/locust.main: Run time limit set to 5 seconds
+Traceback (most recent call last):
+  File "src/gevent/greenlet.py", line 912, in gevent._gevent_cgreenlet.Greenlet.run
+  File "/workspace/scratch/574071a457e6/.venv/lib/python3.12/site-packages/locust/runners.py", line 299, in monitor_cpu_and_memory
+    process = psutil.Process()
+              ^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/574071a457e6/.venv/lib/python3.12/site-packages/psutil/__init__.py", line 314, in __init__
+    self._init(pid)
+  File "/workspace/scratch/574071a457e6/.venv/lib/python3.12/site-packages/psutil/__init__.py", line 360, in _init
+    raise NoSuchProcess(pid, msg=msg) from None
+psutil.NoSuchProcess: process PID not found (pid=1931)
+2026-10-13T15:43:19Z <Greenlet at 0x7f9e0d1c2480: <bound method Runner.monitor_cpu_and_memory of <locust.runners.LocalRunner object at 0x7f9e0d521670>>> failed with NoSuchProcess
+
+[2026-10-13 23:43:19,609] 810e5ade76b1/CRITICAL/locust.runners: Unhandled exception in greenlet: <Greenlet at 0x7f9e0d1c2480: <bound method Runner.monitor_cpu_and_memory of <locust.runners.LocalRunner object at 0x7f9e0d521670>>>
+Traceback (most recent call last):
+  File "src/gevent/greenlet.py", line 912, in gevent._gevent_cgreenlet.Greenlet.run
+  File "/workspace/scratch/574071a457e6/.venv/lib/python3.12/site-packages/locust/runners.py", line 299, in monitor_cpu_and_memory
+    process = psutil.Process()
+    ^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/574071a457e6/.venv/lib/python3.12/site-packages/psutil/__init__.py", line 314, in __init__
+    self._init(pid)
+  File "/workspace/scratch/574071a457e6/.venv/lib/python3.12/site-packages/psutil/__init__.py", line 360, in _init
+    raise NoSuchProcess(pid, msg=msg) from None
+    ^^^^^^^^^^^^^^^^^
+psutil.NoSuchProcess: process PID not found (pid=1931)
+[2026-10-13 23:43:19,610] 810e5ade76b1/INFO/locust.runners: Ramping to 2 users at a rate of 2.00 per second
+[2026-10-13 23:43:19,610] 810e5ade76b1/INFO/locust.runners: All users spawned: {"SchedulingUser": 2} (2 total users)
+[2026-10-13 23:43:19,623] 810e5ade76b1/INFO/locust.main: Shutting down (exit code 2)
+Type     Name                                                                          # reqs      # fails |    Avg     Min     Max    Med |   req/s  failures/s
+--------|----------------------------------------------------------------------------|-------|-------------|-------|-------|-------|-------|--------|-----------
+--------|----------------------------------------------------------------------------|-------|-------------|-------|-------|-------|-------|--------|-----------
+         Aggregated                                                                         0     0(0.00%) |      0       0       0      0 |    0.00        0.00
+
+Response time percentiles (approximated)
+Type     Name                                                                                  50%    66%    75%    80%    90%    95%    98%    99%  99.9% 99.99%   100% # reqs
+--------|--------------------------------------------------------------------------------|--------|------|------|------|------|------|------|------|------|------|------|------
+--------|--------------------------------------------------------------------------------|--------|------|------|------|------|------|------|------|------|------|------|------
+
