@@ -1,0 +1,6 @@
+# Uso: docker compose -f compose.yaml -f compose.pgadmin.yaml up -d
+# Expõe o PostgreSQL somente no próprio computador, sem mudar a porta interna.
+services:
+  db:
+    ports:
+      - "127.0.0.1:5433:5432"
